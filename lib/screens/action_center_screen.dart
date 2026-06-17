@@ -6,6 +6,7 @@ import '../providers/case_state.dart';
 import '../services/pdf_service.dart';
 import '../services/notification_service.dart';
 import '../theme.dart';
+import '../services/ad_service.dart';
 
 class ActionCenterScreen extends StatefulWidget {
   const ActionCenterScreen({super.key});
@@ -131,6 +132,7 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
         duration: Duration(seconds: 2),
       ),
     );
+    AdService.showInterstitialAd(context: context, onAdDismissed: () {});
   }
 
   // Print/Preview PDF
@@ -175,6 +177,7 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     final recommendedIndex = _getRecommendedTemplateIndex(state);
 
     return Scaffold(
+      bottomNavigationBar: const BannerAdWidget(),
       backgroundColor: AppTheme.bgLight,
       appBar: AppBar(
         backgroundColor: AppTheme.primaryNavy,

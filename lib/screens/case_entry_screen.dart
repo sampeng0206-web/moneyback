@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../models/case_model.dart';
 import '../providers/case_state.dart';
 import '../theme.dart';
+import '../services/ad_service.dart';
 
 class CaseEntryScreen extends StatefulWidget {
   const CaseEntryScreen({super.key});
@@ -265,8 +266,16 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
 
     await Provider.of<CaseState>(context, listen: false).updateCase(updatedCase);
     
-    // Navigate to Screen 2
-    Navigator.pushNamed(context, '/ai_check');
+    // Navigate to Screen 2 with Interstitial Ad check
+    if (!mounted) return;
+    AdService.showInterstitialAd(
+      context: context,
+      onAdDismissed: () {
+        if (mounted) {
+          Navigator.pushNamed(context, '/ai_check');
+        }
+      },
+    );
   }
 
   void _showError(String message) {
@@ -281,6 +290,7 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: const BannerAdWidget(),
       backgroundColor: AppTheme.bgLight,
       appBar: AppBar(
         backgroundColor: Colors.white,

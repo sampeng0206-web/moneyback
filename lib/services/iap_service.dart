@@ -8,8 +8,8 @@ class IapService {
   static const String actionPackId = 'moneyback.action.pack.190';
   static const String yearlyId = 'moneyback.yearly.490';
 
-  // API Keys (Placeholder: User should insert their actual RevenueCat keys here)
-  static const String _appleApiKey = 'rc_apple_placeholder_key';
+  // API Keys
+  static const String revenueCatApiKeyIos = 'appl_LgiejGUCEhwgyLdXhPigQrekcCl';
   static const String _googleApiKey = 'rc_google_placeholder_key';
 
   static bool _initialized = false;
@@ -32,7 +32,7 @@ class IapService {
       if (Platform.isAndroid) {
         configuration = PurchasesConfiguration(_googleApiKey);
       } else if (Platform.isIOS) {
-        configuration = PurchasesConfiguration(_appleApiKey);
+        configuration = PurchasesConfiguration(revenueCatApiKeyIos);
       }
 
       if (configuration != null) {
@@ -100,9 +100,16 @@ class IapService {
   static List<String> _getActiveEntitlementsFromInfo(CustomerInfo customerInfo) {
     List<String> entitlements = [];
     
-    // Check which entitlements are active in RevenueCat
-    // In RevenueCat, entitlements are typically configured to map to products.
-    // We assume the entitlement ID matches the product ID or is mapped.
+    // Check for the moneyback-pro entitlement
+    if (customerInfo.entitlements.all['moneyback-pro']?.isActive ?? false) {
+      entitlements.add('moneyback-pro');
+      entitlements.add(protectionPackId);
+      entitlements.add(actionPackId);
+      entitlements.add(yearlyId);
+      return entitlements;
+    }
+
+    // Fallback/Legacy direct checks
     if (customerInfo.entitlements.all[protectionPackId]?.isActive ?? false) {
       entitlements.add(protectionPackId);
     }
@@ -120,6 +127,10 @@ class IapService {
 
   // Helper to check if customer has a specific entitlement active
   static bool _hasActiveEntitlement(CustomerInfo customerInfo, String productId) {
+    if (customerInfo.entitlements.all['moneyback-pro']?.isActive ?? false) {
+      return true;
+    }
+
     if (productId == yearlyId) {
       return customerInfo.entitlements.all[yearlyId]?.isActive ?? false;
     }

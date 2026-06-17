@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/case_state.dart';
 import '../theme.dart';
+import '../services/ad_service.dart';
 
 class AiCheckScreen extends StatefulWidget {
   const AiCheckScreen({super.key});
@@ -53,6 +54,7 @@ class _AiCheckScreenState extends State<AiCheckScreen> {
     return Stack(
       children: [
         Scaffold(
+          bottomNavigationBar: const BannerAdWidget(),
           backgroundColor: AppTheme.bgLight,
           appBar: AppBar(
             backgroundColor: AppTheme.primaryNavy,

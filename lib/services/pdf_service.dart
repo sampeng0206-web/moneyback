@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -68,7 +68,7 @@ class PdfService {
                 children: [
                   pw.Expanded(
                     child: pw.Text(
-                      "本文件由 MoneyBack 把錢拿回來 App 自動生成，內容由用戶自行填寫確認，不構成法律意見。",
+                      "本文件由 MoneyBack 還我錢來 App 自動生成，內容由用戶自行填寫確認，不構成法律意見。",
                       style: pw.TextStyle(font: chineseFont, fontSize: 8, color: PdfColors.grey700),
                     ),
                   ),
@@ -315,7 +315,7 @@ class PdfService {
       default:
         return "查$debtorText曾於$borrowDateStr向本人借款新臺幣 $amountText 元整，並約定於$repayDateStr前清償完畢。";
     }
-  }��所有訴訟費用及相關損害賠償，屆時恐增訟累，非本人所樂見。"
+  }��所有訴訟費用及相關損害賠償，屆時恐增訟累，非本人所樂見。"
         ];
 
       case 2: // 範本三｜最後通牒
@@ -350,3 +350,4 @@ class PdfService {
     return num.toString();
   }
 }
+

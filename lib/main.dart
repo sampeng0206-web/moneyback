@@ -8,12 +8,15 @@ import 'screens/case_entry_screen.dart';
 import 'screens/ai_check_screen.dart';
 import 'screens/action_center_screen.dart';
 
+import 'services/ad_service.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   // Initialize Background & Local Services
   await NotificationService.initialize();
   await IapService.initialize();
+  await AdService.initialize();
   
   runApp(
     ChangeNotifierProvider(
@@ -29,7 +32,7 @@ class MoneyBackApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MoneyBack 把錢拿回來',
+      title: 'MoneyBack 還我錢來',
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       initialRoute: '/',

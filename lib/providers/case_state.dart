@@ -23,6 +23,7 @@ class CaseState extends ChangeNotifier {
   bool get isPurchasedProtection => _isPurchasedProtection || _isPurchasedYearly;
   bool get isPurchasedAction => _isPurchasedAction || _isPurchasedYearly;
   bool get isPurchasedYearly => _isPurchasedYearly;
+  bool get isPremium => isPurchasedProtection || isPurchasedAction || isPurchasedYearly;
 
   int get alertDays => _alertDays;
   bool get isAlertEnabled => _isAlertEnabled;
@@ -105,9 +106,10 @@ class CaseState extends ChangeNotifier {
     notifyListeners();
     try {
       final activeEntitlements = await IapService.restorePurchases();
-      _isPurchasedProtection = activeEntitlements.contains(IapService.protectionPackId);
-      _isPurchasedAction = activeEntitlements.contains(IapService.actionPackId);
-      _isPurchasedYearly = activeEntitlements.contains(IapService.yearlyId);
+      final hasPro = activeEntitlements.contains('moneyback-pro');
+      _isPurchasedProtection = activeEntitlements.contains(IapService.protectionPackId) || hasPro;
+      _isPurchasedAction = activeEntitlements.contains(IapService.actionPackId) || hasPro;
+      _isPurchasedYearly = activeEntitlements.contains(IapService.yearlyId) || hasPro;
 
       if (_isPurchasedYearly) {
         _isPurchasedProtection = true;
@@ -130,9 +132,10 @@ class CaseState extends ChangeNotifier {
     try {
       final activeEntitlements = await IapService.getActiveEntitlements();
       if (activeEntitlements.isNotEmpty) {
-        _isPurchasedProtection = activeEntitlements.contains(IapService.protectionPackId);
-        _isPurchasedAction = activeEntitlements.contains(IapService.actionPackId);
-        _isPurchasedYearly = activeEntitlements.contains(IapService.yearlyId);
+        final hasPro = activeEntitlements.contains('moneyback-pro');
+        _isPurchasedProtection = activeEntitlements.contains(IapService.protectionPackId) || hasPro;
+        _isPurchasedAction = activeEntitlements.contains(IapService.actionPackId) || hasPro;
+        _isPurchasedYearly = activeEntitlements.contains(IapService.yearlyId) || hasPro;
 
         if (_isPurchasedYearly) {
           _isPurchasedProtection = true;
