@@ -12,6 +12,8 @@ workflows:
         BUNDLE_ID: com.moneyback.app
         XCODE_WORKSPACE: ios/Runner.xcworkspace
         XCODE_SCHEME: Runner
+        APP_STORE_CONNECT_ISSUER_ID: 5b4d9000-41c4-470d-8f89-4154cb59bd33
+        APP_STORE_CONNECT_KEY_IDENTIFIER: 9YR5628QVZ
       flutter: stable
       xcode: latest
       cocoapods: default
@@ -27,9 +29,12 @@ workflows:
           keychain initialize
           app-store-connect fetch-signing-files com.moneyback.app \
             --type IOS_APP_STORE \
+            --issuer-id 5b4d9000-41c4-470d-8f89-4154cb59bd33 \
+            --key-id 9YR5628QVZ \
+            --private-key $APP_STORE_CONNECT_PRIVATE_KEY \
             --create
           keychain add-certificates
-          xcode-project use-profiles
+          xcode-project use-profiles --xcode-project ios/Runner.xcodeproj
       - name: Build iOS release
         script: flutter build ipa --release
     artifacts:
