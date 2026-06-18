@@ -27,14 +27,16 @@ workflows:
       - name: Set up code signing
         script: |
           keychain initialize
+          PRIVATE_KEY_PATH=$CM_BUILD_DIR/private_key.p8
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY" > "$PRIVATE_KEY_PATH"
           app-store-connect fetch-signing-files com.moneyback.app \
             --type IOS_APP_STORE \
             --issuer-id 5b4d9000-41c4-470d-8f89-4154cb59bd33 \
             --key-id 9YR5628QVZ \
-            --private-key $APP_STORE_CONNECT_PRIVATE_KEY \
+            --private-key "@$PRIVATE_KEY_PATH" \
             --create
           keychain add-certificates
-          xcode-project use-profiles --xcode-project ios/Runner.xcodeproj
+          xcode-project use-profiles
       - name: Build iOS release
         script: flutter build ipa --release
     artifacts:
