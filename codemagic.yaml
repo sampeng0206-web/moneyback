@@ -8,6 +8,8 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.moneyback.app
+        provisioning_profiles:
+          - moneyback_appstore
       vars:
         BUNDLE_ID: com.moneyback.app
         XCODE_WORKSPACE: ios/Runner.xcworkspace
