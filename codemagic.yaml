@@ -24,7 +24,7 @@ workflows:
         script: |
           flutter build ipa \
             --release \
-            --export-options-plist=/Users/builder/export_options.plist
+            --export-options-plist=$CM_EXPORT_OPTIONS_PATH
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
