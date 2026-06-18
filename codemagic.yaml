@@ -21,12 +21,11 @@ workflows:
       - name: Pod install
         script: cd ios && pod install --repo-update
       - name: Build iOS release
-        script: |
-          flutter build ipa \
-            --release \
-            --export-options-plist=$CM_EXPORT_OPTIONS_PATH
+        script: flutter build ipa --release
     artifacts:
       - build/ios/ipa/*.ipa
+      - "*.ipa"
+      - build/ios/archive/Runner.xcarchive
     publishing:
       app_store_connect:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
