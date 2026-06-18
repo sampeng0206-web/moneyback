@@ -9,7 +9,7 @@ workflows:
         provisioning_profiles:
           - moneyback_appstore
         certificates:
-          - SZU-CHOU PENG
+          - leekcast_tw_dist_v3
       vars:
         BUNDLE_ID: com.moneyback.app
         XCODE_WORKSPACE: ios/Runner.xcworkspace
