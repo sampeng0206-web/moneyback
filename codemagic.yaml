@@ -45,6 +45,13 @@ workflows:
         script: |
           flutter build ipa --release \
             --export-options-plist=/Users/builder/export_options.plist
+          echo "===== PEM 診斷開始 ====="
+          echo "$APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY" | wc -l
+          echo "$APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY" | head -c 50
+          echo ""
+          echo "$APP_STORE_CONNECT_PUBLISHER_PRIVATE_KEY" | tail -c 50
+          echo ""
+          echo "===== PEM 診斷結束 ====="
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
