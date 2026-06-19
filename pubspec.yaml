@@ -1,5 +1,5 @@
 name: moneyback
-description: "被欠錢時的行動決策與債權保全助手"
+description: "鋡急??Ｘ????捱蝑??菜?靽?拇?"
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -15,7 +15,7 @@ dependencies:
   shared_preferences: ^2.2.3
   pdf: ^3.10.8
   printing: ^5.11.0
-  purchases_flutter: ^6.17.0
+  purchases_flutter: ^7.2.0
   firebase_core: ^2.27.0
   firebase_messaging: ^14.7.19
   flutter_local_notifications: ^17.1.2
