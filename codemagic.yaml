@@ -4,6 +4,7 @@ workflows:
     max_build_duration: 60
     environment:
       ios_signing:
+        distribution_type: app_store
         provisioning_profiles:
           - moneyback_appstore
         certificates:
@@ -19,7 +20,7 @@ workflows:
       - name: Pod install
         script: cd ios && pod install --repo-update
       - name: Build iOS release
-        script: flutter build ipa --release --export-method=app-store
+        script: flutter build ipa --release
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
