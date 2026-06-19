@@ -54,7 +54,7 @@ class _AiCheckScreenState extends State<AiCheckScreen> {
     return Stack(
       children: [
         Scaffold(
-          bottomNavigationBar: const BannerAdWidget(),
+          bottomNavigationBar: state.isPremium ? null : const BannerAdWidget(),
           backgroundColor: AppTheme.bgLight,
           appBar: AppBar(
             backgroundColor: AppTheme.primaryNavy,

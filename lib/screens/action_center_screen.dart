@@ -133,7 +133,9 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
         duration: Duration(seconds: 2),
       ),
     );
-    AdService.showInterstitialAd(context: context, onAdDismissed: () {});
+    if (!Provider.of<CaseState>(context, listen: false).isPremium) {
+      AdService.showInterstitialAd(context: context, onAdDismissed: () {});
+    }
   }
 
   // Print/Preview PDF
@@ -178,7 +180,7 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     final recommendedIndex = _getRecommendedTemplateIndex(state);
 
     return Scaffold(
-      bottomNavigationBar: const BannerAdWidget(),
+      bottomNavigationBar: state.isPremium ? null : const BannerAdWidget(),
       backgroundColor: AppTheme.bgLight,
       appBar: AppBar(
         backgroundColor: AppTheme.primaryNavy,

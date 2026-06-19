@@ -268,14 +268,21 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
     
     // Navigate to Screen 2 with Interstitial Ad check
     if (!mounted) return;
-    AdService.showInterstitialAd(
-      context: context,
-      onAdDismissed: () {
-        if (mounted) {
-          Navigator.pushNamed(context, '/ai_check');
-        }
-      },
-    );
+    final isPremium = Provider.of<CaseState>(context, listen: false).isPremium;
+    if (isPremium) {
+      if (mounted) {
+        Navigator.pushNamed(context, '/ai_check');
+      }
+    } else {
+      AdService.showInterstitialAd(
+        context: context,
+        onAdDismissed: () {
+          if (mounted) {
+            Navigator.pushNamed(context, '/ai_check');
+          }
+        },
+      );
+    }
   }
 
   void _showError(String message) {
@@ -290,7 +297,7 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const BannerAdWidget(),
+      bottomNavigationBar: Provider.of<CaseState>(context).isPremium ? null : const BannerAdWidget(),
       backgroundColor: AppTheme.bgLight,
       appBar: AppBar(
         backgroundColor: Colors.white,
