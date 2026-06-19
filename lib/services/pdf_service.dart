@@ -14,7 +14,7 @@ class PdfService {
     // Resolve Chinese Font (Noto Sans TC)
     pw.Font chineseFont;
     try {
-      chineseFont = await PdfGoogleFonts.notoSansTc();
+      chineseFont = await PdfGoogleFonts.notoSansTCRegular();
     } catch (e) {
       // Fallback to standard Helvetica if offline or failed, 
       // though Helvetica won't render Chinese characters.
@@ -64,7 +64,7 @@ class PdfService {
               pw.Divider(thickness: 0.5, color: PdfColors.grey),
               pw.SizedBox(height: 5),
               pw.Row(
-                main pw.MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
                   pw.Expanded(
                     child: pw.Text(
@@ -98,15 +98,15 @@ class PdfService {
 
             // Receiver & Sender details
             pw.Column(
-              cross: pw.CrossAxisAlignment.start,
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Row(
-                  cross: pw.CrossAxisAlignment.start,
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Text("受文者：", style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 14)),
                     pw.Expanded(
                       child: pw.Column(
-                        cross: pw.CrossAxisAlignment.start,
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
                           pw.Text("$recipientName 先生/小姐/公司", style: const pw.TextStyle(fontSize: 14)),
                           pw.Text(recipientAddr, style: const pw.TextStyle(fontSize: 14)),
@@ -117,12 +117,12 @@ class PdfService {
                 ),
                 pw.SizedBox(height: 15),
                 pw.Row(
-                  cross: pw.CrossAxisAlignment.start,
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Text("發文者：", style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 14)),
                     pw.Expanded(
                       child: pw.Column(
-                        cross: pw.CrossAxisAlignment.start,
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
                           pw.Text("$senderName 先生/小姐", style: const pw.TextStyle(fontSize: 14)),
                           pw.Text(senderAddr, style: const pw.TextStyle(fontSize: 14)),
@@ -146,7 +146,7 @@ class PdfService {
 
             // Subject
             pw.Row(
-              cross: pw.CrossAxisAlignment.start,
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Text("主旨：", style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 14)),
                 pw.Expanded(
@@ -168,7 +168,7 @@ class PdfService {
                 return pw.Padding(
                   padding: const pw.EdgeInsets.only(bottom: 10),
                   child: pw.Row(
-                    cross: pw.CrossAxisAlignment.start,
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
                       pw.Text(
                         _getChineseNumber(index + 1) + "、",
@@ -177,8 +177,7 @@ class PdfService {
                       pw.Expanded(
                         child: pw.Text(
                           explanations[index],
-                          style: const pw.TextStyle(fontSize: 14),
-                          lineSpacing: 1.8,
+                          style: const pw.TextStyle(fontSize: 14)
                         ),
                       ),
                     ],
@@ -193,7 +192,7 @@ class PdfService {
 
             // Sincerely
             pw.Row(
-              mainpw.MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
                 pw.Text("此致\n$recipientName 先生/小姐/公司", style: const pw.TextStyle(fontSize: 14)),
                 pw.Padding(

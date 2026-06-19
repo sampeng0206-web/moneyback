@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:printing/printing.dart';
@@ -401,9 +402,9 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
               ],
             ),
             const SizedBox(height: 8),
-            _buildStrategyBullet("繼續情緒爭論或求對方", isDo = false),
-            _buildStrategyBullet("接受對方口頭承諾而不要求書面紀錄", isDo = false),
-            _buildStrategyBullet("在對話中透露你已準備提告（打草驚蛇）", isDo = false),
+            _buildStrategyBullet("繼續情緒爭論或求對方", isDo: false),
+            _buildStrategyBullet("接受對方口頭承諾而不要求書面紀錄", isDo: false),
+            _buildStrategyBullet("在對話中透露你已準備提告（打草驚蛇）", isDo: false),
           ],
         ),
       ),
@@ -930,7 +931,7 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
           children: [
             const Row(
               children: [
-                Icon(Icons.markasread_rounded, color: AppTheme.primaryNavy, size: 20),
+                Icon(Icons.mark_email_read_rounded, color: AppTheme.primaryNavy, size: 20),
                 SizedBox(width: 8),
                 Text(
                   "如何透過郵局寄送存證信函",
