@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -221,7 +221,14 @@ class PdfService {
       case 1: // 只有對話紀錄
         return "關於台端積欠本人新臺幣 $amountText 元債務，請台端於函到七日內清償，特此函告。";
       case 2: // 最後通牒
-        return "關於台端積欠本人新臺幣 $amountText 元債務，請台端於函到七日內清償，否則本人將立即採取法  // Helper: Get explanation lines based on template index
+        return "關於台端積欠本人新臺幣 $amountText 元債務，請台端於函到七日內清償，否則本人將立即採取法律途徑解決，特此通知。";
+      case 3: // 連帶保證人
+      default:
+        return "關於台端積欠本人新臺幣 $amountText 元債務催清償事宜。";
+    }
+  }
+
+  // Helper: Get explanation lines based on template index
   static List<String> _getExplanations(CaseModel caseModel, int templateIndex) {
     final amountText = caseModel.amount.toStringAsFixed(0);
     
@@ -315,35 +322,8 @@ class PdfService {
       default:
         return "查$debtorText曾於$borrowDateStr向本人借款新臺幣 $amountText 元整，並約定於$repayDateStr前清償完畢。";
     }
-  }��所有訴訟費用及相關損害賠償，屆時恐增訟累，非本人所樂見。"
-        ];
-
-      case 2: // 範本三｜最後通牒
-        final evidence = caseModel.evidenceTypes.isNotEmpty ? caseModel.evidenceTypes : "借據、轉帳紀錄、對話紀錄";
-        return [
-          "查台端曾於$borrowDateStr向本人借款新臺幣 $amountText 元整，並約定於$repayDateStr前清償完畢。此有 $evidence 可稽。",
-          "詎料，台端屆期迄未依約清償上開借款，經本人多次催告，台端仍置之不理，顯已構成債務不履行。",
-          "本人已多次給予台端清償機會，惟台端均未積極處理。為維護本人合法權益，特再次函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣 $amountText 元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
-          "如台端逾期仍未清償，本人將不再容忍，屆時將立即向法院提起民事訴訟，請求返還借款及利息，並請求台端負擔所有訴訟費用、律師費用及相關損害賠償。同時，本人將依法循一切合法途徑維護自身權益，請台端審慎考量，切勿自誤。"
-        ];
-
-      case 3: // 範本四｜連帶保證人
-        final cosignerName = caseModel.cosignerName.isNotEmpty ? caseModel.cosignerName : "[連帶保證人]";
-        final debtorName = caseModel.recipientName.isNotEmpty ? caseModel.recipientName : "[主債務人]";
-        final evidence = caseModel.evidenceTypes.isNotEmpty ? caseModel.evidenceTypes : "借據、保證契約";
-        return [
-          "查主債務人 $debtorName 曾於$borrowDateStr向本人借款新臺幣 $amountText 元整，並約定於$repayDateStr前清償完畢。台端就上開債務，業已簽立連帶保證契約，同意與主債務人 $debtorName 負連帶清償責任，此有 $evidence 可稽。",
-          "詎料，主債務人 $debtorName 屆期迄未依約清償上開借款，經本人多次催告，主債務人仍置之不理，顯已構成債務不履行。",
-          "依民法第739條及相關規定，台端身為連帶保證人，應與主債務人負同一清償責任，且不得主張民法第745條之先訴抗辯權。為此，特函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣 $amountText 元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
-          "如台端逾期仍未清償，本人將不另通知，逕行依法向法院提起訴訟，請求台端負連帶清償責任，並請求台端負擔所有訴訟費用及相關損害賠償，屆時恐增訟累，非本人所樂見。"
-        ];
-
-      default:
-        return [];
-    }
   }
 
-  // Chinese numbering helper (1 -> 一, 2 -> 二, etc.)
   static String _getChineseNumber(int num) {
     const list = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
     if (num >= 0 && num <= 10) return list[num];
