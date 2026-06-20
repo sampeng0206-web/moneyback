@@ -249,11 +249,14 @@ class PdfService {
 
     switch (templateIndex) {
       case 0: // 範本一｜有轉帳紀錄
+        final hasTransferDate = caseModel.transferDate != null;
         final transferRoc = CaseState.getRocDateParts(caseModel.transferDate);
         final transferDateStr = "中華民國 ${transferRoc['year']} 年 ${transferRoc['month']} 月 ${transferRoc['day']} 日";
         final firstSentence = _getDebtDescription(caseModel, debtorText: '台端', service: service, rental: rental);
         return [
-          "${firstSentence}本人已於$transferDateStr將款項轉帳至台端指定帳戶，此有轉帳紀錄可稽。",
+          hasTransferDate
+            ? "${firstSentence}本人已於$transferDateStr將款項轉帳至台端指定帳戶，此有轉帳紀錄可稽。"
+            : "${firstSentence}本人已將款項轉帳至台端指定帳戶，此有轉帳紀錄可稽。",
           "詎料，台端屆期迄未依約清償上開借款，經本人多次催告，台端仍置之不理，顯已構成債務不履行。",
           "為此，特函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣 $amountText 元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
           "如台端逾期仍未清償，本人將不另通知，逕行依法向法院提起訴訟，請求返還借款及利息，並請求台端負擔所有訴訟費用及相關損害賠償，屆時恐增訟累，非本人所樂見。"
