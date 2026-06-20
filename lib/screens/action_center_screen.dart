@@ -65,7 +65,10 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     } else if (model.hasLineScreenshots) {
       return 1; // 範本二｜只有對話紀錄
     }
-    return 0; // Default
+    // 無轉帳紀錄、無對話截圖（例如僅現金交付或口頭承諾）
+    // 不可預設帶入「有轉帳紀錄」或「有對話紀錄」等不實內容
+    // 改用最後通牒範本，其內容不強制主張特定證據類型
+    return 2;
   }
 
   String _getRecommendedTemplateName(int index) {

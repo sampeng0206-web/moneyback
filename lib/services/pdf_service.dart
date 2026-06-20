@@ -270,10 +270,15 @@ class PdfService {
         ];
 
       case 2: // 範本三｜最後通牒
-        final evidence = caseModel.evidenceTypes.isNotEmpty ? caseModel.evidenceTypes : "借據、轉帳紀錄、對話紀錄";
+        final evidenceList = <String>[];
+        if (caseModel.hasTransferRecord) evidenceList.add("轉帳紀錄");
+        if (caseModel.hasLineScreenshots) evidenceList.add("對話紀錄");
+        if (caseModel.evidenceTypes.isNotEmpty) evidenceList.add(caseModel.evidenceTypes);
+        final hasAnyEvidence = evidenceList.isNotEmpty;
+        final evidence = evidenceList.join("、");
         final firstSentence = _getDebtDescription(caseModel, debtorText: '台端', service: service, rental: rental);
         return [
-          "${firstSentence}此有 $evidence 可稽。",
+          hasAnyEvidence ? "${firstSentence}此有 $evidence 可稽。" : firstSentence,
           "詎料，台端屆期迄未依約清償上開借款，經本人多次催告，台端仍置之不理，顯已構成債務不履行。",
           "本人已多次給予台端清償機會，惟台端均未積極處理。為維護本人合法權益，特再次函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣 $amountText 元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
           "如台端逾期仍未清償，本人將不再容忍，屆時將立即向法院提起民事訴訟，請求返還借款及利息，並請求台端負擔所有訴訟費用、律師費用及相關損害賠償。同時，本人將依法循一切合法途徑維護自身權益，請台端審慎考量，切勿自誤。"
@@ -281,10 +286,17 @@ class PdfService {
 
       case 3: // 範本四｜連帶保證人
         final debtorName = caseModel.recipientName.isNotEmpty ? caseModel.recipientName : "[主債務人]";
-        final evidence = caseModel.evidenceTypes.isNotEmpty ? caseModel.evidenceTypes : "借據、保證契約";
+        final evidenceList4 = <String>[];
+        if (caseModel.hasTransferRecord) evidenceList4.add("轉帳紀錄");
+        if (caseModel.hasLineScreenshots) evidenceList4.add("對話紀錄");
+        if (caseModel.evidenceTypes.isNotEmpty) evidenceList4.add(caseModel.evidenceTypes);
+        final hasAnyEvidence4 = evidenceList4.isNotEmpty;
+        final evidence4 = evidenceList4.join("、");
         final firstSentence = _getDebtDescription(caseModel, debtorText: "主債務人 $debtorName", service: service, rental: rental);
         return [
-          "${firstSentence}台端就上開債務，業已簽立連帶保證契約，同意與主債務人 $debtorName 負連帶清償責任，此有 $evidence 可稽。",
+          hasAnyEvidence4
+            ? "${firstSentence}台端就上開債務，業已簽立連帶保證契約，同意與主債務人 $debtorName 負連帶清償責任，此有 $evidence4 可稽。"
+            : "${firstSentence}台端就上開債務，業已簽立連帶保證契約，同意與主債務人 $debtorName 負連帶清償責任。",
           "詎料，主債務人 $debtorName 屆期迄未依約清償上開借款，經本人多次催告，主債務人仍置之不理，顯已構成債務不履行。",
           "依民法第739條及相關規定，台端身為連帶保證人，應與主債務人負同一清償責任，且不得主張民法第745條之先訴抗辯權。為此，特函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣 $amountText 元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
           "如台端逾期仍未清償，本人將不另通知，逕行依法向法院提起訴訟，請求台端負連帶清償責任，並請求台端負擔所有訴訟費用及相關損害賠償，屆時恐增訟累，非本人所樂見。"
