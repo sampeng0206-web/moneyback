@@ -86,14 +86,23 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     }
   }
 
-  String _getRecommendedReason(int index) {
+  String _getRecommendedReason(int index, CaseState state) {
+    final model = state.currentCase;
     switch (index) {
       case 0:
         return "因為你有匯款紀錄，這份存證信函的法律效力最強。";
       case 1:
         return "因為你只有通訊軟體的對話內容，以此信函促使對方確認債權。";
       case 2:
-        return "因為對方已失聯封鎖，透過此信函進行法律程序前的最終催告。";
+        if (model.situation == "對方已失聯") {
+          return "因為對方已失聯封鎖，透過此信函進行法律程序前的最終催告。";
+        }
+        return "適合寄發存證信函的關鍵時機：\n"
+            "1. 未約定還款期限：依法須先「催告」，對方才起算遲延責任。\n"
+            "2. 對方一再拖延、不斷更改承諾：以書面設定正式期限。\n"
+            "3. 私下催討已讀不回：提升警告力道，表明準備正式法律程序。\n"
+            "4. 接近請求權時效：部分債權（租金、貨款等）時效僅 2-5 年，寄信可中斷時效。\n"
+            "5. 作為日後訴訟的書面證據，證明你已盡催告義務。";
       case 3:
         return "因為你的案件有連帶保證人，應依法向其主張連帶債務清償責任。";
       default:
@@ -635,7 +644,7 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        _getRecommendedReason(recommendedIndex),
+                        _getRecommendedReason(recommendedIndex, state),
                         style: const TextStyle(fontSize: 12, color: AppTheme.textDark, height: 1.4),
                       ),
                     ],
@@ -676,9 +685,9 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
               unselectedLabelColor: AppTheme.textMuted,
               indicatorColor: AppTheme.primaryNavy,
               tabs: [
-                _buildTemplateTabLabel("範本一｜轉帳", 0, recommendedIndex),
+                _buildTemplateTabLabel("範本一｜催款", 0, recommendedIndex),
                 _buildTemplateTabLabel("範本二｜對話", 1, recommendedIndex),
-                _buildTemplateTabLabel("範本三｜失聯", 2, recommendedIndex),
+                _buildTemplateTabLabel("範本三｜最後通牒", 2, recommendedIndex),
                 _buildTemplateTabLabel("範本四｜保證人", 3, recommendedIndex),
               ],
               onTap: (index) {
