@@ -169,6 +169,38 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
 
   // Share/Save PDF file
   Future<void> _downloadPdf(CaseState state, int templateIndex) async {
+    final model = state.currentCase;
+    final missingFields = <String>[];
+    if (model.senderName.isEmpty) missingFields.add("您的姓名");
+    if (model.senderAddress.isEmpty) missingFields.add("您的地址");
+    if (model.recipientName.isEmpty) missingFields.add("對方姓名");
+    if (model.recipientAddress.isEmpty) missingFields.add("對方地址");
+
+    if (missingFields.isNotEmpty) {
+      final shouldContinue = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("資料尚未填寫完整"),
+          content: Text(
+            "以下欄位目前是空白的：\n${missingFields.join('、')}\n\n"
+            "若要透過郵局正式寄送存證信函，必須填寫雙方的姓名與確實送達地址才能投遞成功。\n\n"
+            "您仍可繼續下載此 PDF（例如先列印手動填寫，或作為對話範本使用）。",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("先去填寫"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text("繼續下載"),
+            ),
+          ],
+        ),
+      );
+      if (shouldContinue != true) return;
+    }
+
     final pdfBytes = await PdfService.generatePdf(state.currentCase, templateIndex);
     final fileName = "存證信函_${_getRecommendedTemplateName(templateIndex)}.pdf";
     
