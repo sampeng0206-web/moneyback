@@ -880,7 +880,6 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
                               controller: _senderNameController,
                               decoration: const InputDecoration(hintText: "請輸入您的真實姓名"),
                               validator: (value) {
-                                if (value == null || value.isEmpty) return "請輸入寄件人姓名";
                                 return null;
                               },
                             ),
@@ -891,7 +890,6 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
                               controller: _senderAddressController,
                               decoration: const InputDecoration(hintText: "請輸入您的通訊/戶籍地址"),
                               validator: (value) {
-                                if (value == null || value.isEmpty) return "請輸入寄件人地址";
                                 return null;
                               },
                             ),
@@ -922,7 +920,6 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
                           controller: _recipientNameController,
                           decoration: const InputDecoration(hintText: "請輸入對方的姓名"),
                           validator: (value) {
-                            if (value == null || value.isEmpty) return "請輸入受件人（對方）姓名";
                             return null;
                           },
                         ),
@@ -935,7 +932,6 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
                             hintText: "請輸入對方地址",
                           ),
                           validator: (value) {
-                            if (value == null || value.isEmpty) return "請輸入受件人（對方）地址";
                             return null;
                           },
                         ),
