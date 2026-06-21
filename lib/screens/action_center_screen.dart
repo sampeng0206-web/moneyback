@@ -276,6 +276,9 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
               // New: Legal path advice
               _buildLegalPathAdvice(state),
 
+              // New: Limitation reminder
+              _buildLimitationReminder(state),
+
               // 5A. 3 Collection templates
               _buildMessageTemplates(state),
 
@@ -284,6 +287,9 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
 
               // New: Asset inquiry info
               _buildAssetInquiryInfo(),
+
+              // New: Enforcement overview
+              _buildEnforcementOverview(),
             ] else ...[
               // If they somehow got here without unlocking Protection Pack
               _buildLockedModuleCard(
@@ -588,6 +594,104 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     );
   }
 
+  // New: Statute of Limitations Reminder
+  int _getLimitationYears(String debtType) {
+    switch (debtType) {
+      case 'commercial':
+      case 'online_shopping':
+        return 2;
+      case 'rental':
+        return 5;
+      case 'loan':
+      case 'advance':
+      default:
+        return 15;
+    }
+  }
+
+  Widget _buildLimitationReminder(CaseState state) {
+    final model = state.currentCase;
+    final limitYears = _getLimitationYears(model.debtType);
+    final startDate = model.repayDate;
+    final deadlineDate = DateTime(startDate.year + limitYears, startDate.month, startDate.day);
+    final now = DateTime.now();
+    final remainingDays = deadlineDate.difference(now).inDays;
+    final isExpired = remainingDays <= 0;
+    final isUrgent = !isExpired && remainingDays <= 180;
+
+    Color statusColor;
+    String statusText;
+    if (isExpired) {
+      statusColor = AppTheme.dangerRed;
+      statusText = "請求權時效可能已經過，建議盡速諮詢專業律師確認是否有時效中斷事由。";
+    } else if (isUrgent) {
+      statusColor = AppTheme.dangerRed;
+      statusText = "剩餘時效不足半年，建議盡速採取催告或法律行動，避免時效消滅。";
+    } else if (remainingDays <= 365) {
+      statusColor = AppTheme.secondaryYellow;
+      statusText = "剩餘時效不足一年，建議提前規劃後續行動。";
+    } else {
+      statusColor = AppTheme.actionGreen;
+      statusText = "目前時效仍充裕，但仍建議盡早採取行動，避免事證流失。";
+    }
+
+    return Card(
+      color: const Color(0xFFFFF3E0),
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.hourglass_bottom, color: Color(0xFFE65100), size: 20),
+                SizedBox(width: 8),
+                Text(
+                  "請求權時效提醒",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFFE65100)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              isExpired
+                  ? "依您填寫的清償日期推算，本案請求權時效（$limitYears 年）可能已經過。"
+                  : "依您填寫的清償日期推算，本案請求權時效為 $limitYears 年，距時效完成尚餘約 ${(remainingDays / 365).toStringAsFixed(1)} 年（約 $remainingDays 天）。",
+              style: const TextStyle(fontSize: 13, color: AppTheme.textDark, height: 1.5),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: statusColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: statusColor),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: statusColor, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      statusText,
+                      style: TextStyle(fontSize: 12, color: statusColor, fontWeight: FontWeight.bold, height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "提醒：寄發存證信函、提起訴訟、聲請支付命令等行為可能中斷時效重新起算，實際時效起算點與中斷事由請諮詢專業律師確認。",
+              style: TextStyle(fontSize: 11, color: AppTheme.textMuted, height: 1.4),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // 5A. Template Messages
   Widget _buildMessageTemplates(CaseState state) {
     return Card(
@@ -751,6 +855,45 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
             const SizedBox(height: 8),
             const Text(
               "這兩項資料能協助確認對方名下財產，作為後續強制執行的查調依據。此為資訊性說明，實際申請流程請依國稅局最新規定辦理，建議諮詢專業律師協助。",
+              style: TextStyle(fontSize: 11, color: AppTheme.textMuted, height: 1.4),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // New: Enforcement Process Overview Card
+  Widget _buildEnforcementOverview() {
+    return Card(
+      color: const Color(0xFFECEFF1),
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.account_balance, color: Color(0xFF455A64), size: 20),
+                SizedBox(width: 8),
+                Text(
+                  "取得勝訴文件後：強制執行流程簡介",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF263238)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "當你取得確定判決、支付命令，或經法院核定的調解書後，若對方仍不履行給付，可向法院聲請強制執行，常見方式包括：",
+              style: TextStyle(fontSize: 13, color: AppTheme.textDark, height: 1.5),
+            ),
+            const SizedBox(height: 8),
+            _buildStrategyBullet("查封拍賣：法院可查封對方名下的不動產、車輛、存款等財產進行拍賣或扣押"),
+            _buildStrategyBullet("扣押薪資／存款：向對方任職公司或往來銀行核發扣押命令，按比例扣繳"),
+            _buildStrategyBullet("財產報告義務：依強制執行法，債務人有申報財產清冊之義務，無正當理由拒絕申報或有逃匿之虞者，法院得限制住居，必要時聲請管收"),
+            const SizedBox(height: 8),
+            const Text(
+              "此為一般程序性資訊整理，實際執行方式須視對方財產狀況、案件性質而定，建議聲請強制執行前諮詢專業律師協助評估。",
               style: TextStyle(fontSize: 11, color: AppTheme.textMuted, height: 1.4),
             ),
           ],
