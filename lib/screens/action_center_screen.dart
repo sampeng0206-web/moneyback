@@ -497,11 +497,11 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
             const SizedBox(height: 16),
             const Row(
               children: [
-                Icon(Icons.cancel, color: AppTheme.dangerRed, size: 20),
+                Icon(Icons.cancel, color: Color(0xFFD84315), size: 20),
                 SizedBox(width: 8),
                 Text(
                   "千萬不要做的事",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.dangerRed),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFFD84315)),
                 ),
               ],
             ),
@@ -523,7 +523,7 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
         children: [
           Text(
             isDo ? "• " : "• ",
-            style: TextStyle(color: isDo ? AppTheme.actionGreen : AppTheme.dangerRed, fontWeight: FontWeight.bold),
+            style: TextStyle(color: isDo ? AppTheme.actionGreen : const Color(0xFFD84315), fontWeight: FontWeight.bold),
           ),
           Expanded(
             child: Text(
@@ -1623,10 +1623,10 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
   // Locked Module display card
   Widget _buildLockedModuleCard({required String title, required String description}) {
     return Card(
-      color: Colors.grey.shade100,
+      color: const Color(0xFFFFF8E1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.shade300, width: 1),
+        side: const BorderSide(color: Color(0xFFFFD54F), width: 1.5),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -1635,31 +1635,35 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
           children: [
             Row(
               children: [
-                const Icon(Icons.lock_outline_rounded, color: AppTheme.textMuted),
+                const Icon(Icons.workspace_premium, color: Color(0xFFF9A825)),
                 const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.textMuted),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.primaryNavy),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Text(
               description,
-              style: const TextStyle(fontSize: 13, color: AppTheme.textMuted, height: 1.4),
+              style: const TextStyle(fontSize: 13, color: AppTheme.textDark, height: 1.4),
             ),
-            const SizedBox(height: 12),
-            ElevatedButton(
+            const SizedBox(height: 14),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.lock_open_rounded, size: 18),
+              label: const Text("立即解鎖完整功能", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryNavy,
-                minimumSize: const Size(120, 36),
+                backgroundColor: const Color(0xFFF9A825),
+                foregroundColor: AppTheme.primaryNavy,
+                minimumSize: const Size.fromHeight(46),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
               ),
               onPressed: () {
                 // Return to Screen 2 to unlock
                 Navigator.pop(context);
               },
-              child: const Text("返回健檢頁進行解鎖", style: TextStyle(fontSize: 13)),
             ),
           ],
         ),
