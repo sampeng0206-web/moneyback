@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
@@ -210,6 +211,103 @@ class PdfService {
     );
 
     return pdf.save();
+  }
+
+  // Helper: Escape text and convert non-ASCII characters to RTF unicode format
+  static String _rtfEscape(String text) {
+    final buffer = StringBuffer();
+    for (final rune in text.runes) {
+      if (rune == 92) {
+        buffer.write(r'\\');
+      } else if (rune == 123) {
+        buffer.write(r'\{');
+      } else if (rune == 125) {
+        buffer.write(r'\}');
+      } else if (rune == 10) {
+        buffer.write(r'\par ');
+      } else if (rune < 128) {
+        buffer.writeCharCode(rune);
+      } else {
+        int code = rune;
+        if (code > 32767) code -= 65536;
+        buffer.write('\\u$code?');
+      }
+    }
+    return buffer.toString();
+  }
+
+  // Generate an editable RTF (Word-compatible) version of the certified letter
+  static Future<Uint8List> generateRtf(CaseModel caseModel, int templateIndex) async {
+    final String subjectText = _getSubject(caseModel, templateIndex);
+    final List<String> explanations = _getExplanations(caseModel, templateIndex);
+
+    final sendRocDate = CaseState.getRocDateParts(caseModel.sendDate);
+    final String sendDateStr = "中華民國\u00A0${sendRocDate['year']}\u00A0年\u00A0${sendRocDate['month']}\u00A0月\u00A0${sendRocDate['day']}\u00A0日";
+
+    final String recipientName = caseModel.recipientName.isNotEmpty ? caseModel.recipientName : "[對方姓名]";
+    final String recipientAddr = caseModel.recipientAddress.isNotEmpty ? caseModel.recipientAddress : "[對方地址]";
+    final String senderName = caseModel.senderName.isNotEmpty ? caseModel.senderName : "[寄件姓名]";
+    final String senderAddr = caseModel.senderAddress.isNotEmpty ? caseModel.senderAddress : "[寄件地址]";
+
+    final buffer = StringBuffer();
+    buffer.write(r'{\rtf1\ansi\ansicpg1252\deff0\deflang1028');
+    buffer.write(r'{\fonttbl{\f0\fnil\fcharset136 PMingLiU;}}');
+    buffer.write(r'\f0\fs28');
+
+    buffer.write(r'\qc\b\fs36 ');
+    buffer.write(_rtfEscape("存 證 信 函"));
+    buffer.write(r'\b0\fs28\par\par');
+
+    buffer.write(r'\ql ');
+    buffer.write(r'\b ');
+    buffer.write(_rtfEscape("收件人："));
+    buffer.write(r'\b0 ');
+    buffer.write(_rtfEscape("$recipientName 先生/小姐/公司"));
+    buffer.write(r'\par ');
+    buffer.write(_rtfEscape(recipientAddr));
+    buffer.write(r'\par\par');
+
+    buffer.write(r'\b ');
+    buffer.write(_rtfEscape("寄件人："));
+    buffer.write(r'\b0 ');
+    buffer.write(_rtfEscape("$senderName 先生/小姐"));
+    buffer.write(r'\par ');
+    buffer.write(_rtfEscape(senderAddr));
+    buffer.write(r'\par\par');
+
+    buffer.write(r'\b ');
+    buffer.write(_rtfEscape("發信日期："));
+    buffer.write(r'\b0 ');
+    buffer.write(_rtfEscape(sendDateStr));
+    buffer.write(r'\par\par');
+
+    buffer.write(r'\b ');
+    buffer.write(_rtfEscape("主旨："));
+    buffer.write(r'\b0 ');
+    buffer.write(_rtfEscape(subjectText));
+    buffer.write(r'\par\par');
+
+    buffer.write(r'\b ');
+    buffer.write(_rtfEscape("說明："));
+    buffer.write(r'\b0\par');
+    for (int i = 0; i < explanations.length; i++) {
+      buffer.write(_rtfEscape("${_getChineseNumber(i + 1)}、${explanations[i]}"));
+      buffer.write(r'\par\par');
+    }
+
+    buffer.write(_rtfEscape("此致"));
+    buffer.write(r'\par ');
+    buffer.write(_rtfEscape("$recipientName 先生/小姐/公司"));
+    buffer.write(r'\par\par\par');
+    buffer.write(r'\qr ');
+    buffer.write(_rtfEscape("$senderName （簽章）"));
+    buffer.write(r'\par');
+    buffer.write(r'\ql ');
+
+    buffer.write('}');
+
+    final rtfString = buffer.toString();
+    return Uint8List.fromList(latin1.encode(rtfString));
   }
 
   // Helper: Get subject based on template index

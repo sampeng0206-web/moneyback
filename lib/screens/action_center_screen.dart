@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:printing/printing.dart';
@@ -209,11 +212,41 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
             allowSharing: true,
             canChangePageFormat: false,
             canChangeOrientation: false,
-            actions: const [],
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit_document),
+                tooltip: '匯出可編輯版本（Word/RTF）',
+                onPressed: () => _exportRtf(state, templateIndex),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  // Export editable RTF (Word-compatible) version of the certified letter
+  Future<void> _exportRtf(CaseState state, int templateIndex) async {
+    try {
+      final rtfBytes = await PdfService.generateRtf(state.currentCase, templateIndex);
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/存證信函_${_getRecommendedTemplateName(templateIndex)}.rtf');
+      await file.writeAsBytes(rtfBytes);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('已匯出可編輯版本，若有填入相關客製化情況需求，可用此檔案選用 Word 開啟進行編輯。'),
+          duration: Duration(seconds: 4),
+        ),
+      );
+      await Share.shareXFiles([XFile(file.path)]);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('匯出失敗：$e')),
+      );
+    }
   }
 
   // Share/Save PDF file
