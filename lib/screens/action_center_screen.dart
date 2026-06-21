@@ -110,6 +110,22 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     }
   }
 
+  String _getDebtTypeNoun(String debtType) {
+    switch (debtType) {
+      case 'advance':
+        return '代墊費用';
+      case 'commercial':
+        return '貨款';
+      case 'rental':
+        return '租金';
+      case 'online_shopping':
+        return '網購款項';
+      case 'loan':
+      default:
+        return '借款';
+    }
+  }
+
   // Helper to get formatted message content
   String _getMessageContent(CaseState state, int index) {
     final model = state.currentCase;
@@ -118,6 +134,7 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     final chatApp = model.chatAppName.isNotEmpty ? model.chatAppName : "LINE";
     final borrowDate = CaseState.formatToRocString(model.borrowDate);
     final repayDate = CaseState.formatToRocString(model.repayDate);
+    final debtNoun = _getDebtTypeNoun(model.debtType);
     
     // Calculate 7 days after today for repayment deadline
     final deadlineDate = DateTime.now().add(const Duration(days: 7));
@@ -125,11 +142,11 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
 
     switch (index) {
       case 0: // 不撕破臉
-        return "${opponentName}，我們之前說好 ${repayDate.replaceAll("中華民國 ", "")} 要還的 NT\$$amountText，到今天還沒收到。請你在 ${deadlineRocStr.replaceAll("中華民國 ", "")} 前完成匯款，帳號是 [您的銀行與帳號]。謝謝。";
+        return "${opponentName}，我們之前說好 ${repayDate.replaceAll("中華民國 ", "")} 要還的 $debtNoun NT\$$amountText，到今天還沒收到。請你在 ${deadlineRocStr.replaceAll("中華民國 ", "")} 前完成匯款，帳號是 [您的銀行與帳號]。謝謝。";
       case 1: // 正式催告
-        return "${opponentName} 先生／小姐，茲通知你，你積欠本人新台幣 $amountText 元整（借款日期：$borrowDate），已逾約定清償期 $repayDate 至今未履行。本人正式要求你於收到此訊息後七日內清償完畢，並以銀行匯款方式匯入本人帳戶，並保留此通知作為催告紀錄。";
+        return "${opponentName} 先生／小姐，茲通知你，你積欠本人新台幣 $amountText 元整之$debtNoun（發生日期：$borrowDate），已逾約定清償期 $repayDate 至今未履行。本人正式要求你於收到此訊息後七日內清償完畢，並以銀行匯款方式匯入本人帳戶，並保留此通知作為催告紀錄。";
       case 2: // 最後通牒
-        return "${opponentName}，本人已多次催告，截至今日你仍未履行還款義務。本人保留透過法律途徑追討上述款項之一切權利，相關訴訟費用亦將一併請求。此為最終通知。";
+        return "${opponentName}，本人已多次就上述$debtNoun催告，截至今日你仍未履行給付義務。本人保留透過法律途徑追討上述款項之一切權利，相關訴訟費用亦將一併請求。此為最終通知。";
       default:
         return "";
     }
