@@ -671,8 +671,39 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
 
   Widget _buildLimitationReminder(CaseState state) {
     final model = state.currentCase;
+    final repayDate = model.repayDate;
+
+    if (repayDate == null) {
+      return Card(
+        color: const Color(0xFFFFF3E0),
+        child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.hourglass_bottom, color: Color(0xFFE65100), size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    "請求權時效提醒",
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFFE65100)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                "請先填寫「約定還款日」，系統才能為您計算請求權時效剩餘天數。",
+                style: TextStyle(fontSize: 13, color: AppTheme.textDark, height: 1.5),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     final limitYears = _getLimitationYears(model.debtType);
-    final startDate = model.repayDate;
+    final startDate = repayDate;
     final deadlineDate = DateTime(startDate.year + limitYears, startDate.month, startDate.day);
     final now = DateTime.now();
     final remainingDays = deadlineDate.difference(now).inDays;
