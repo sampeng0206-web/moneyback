@@ -22,13 +22,15 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
   int _selectedLetterTemplateIndex = 0; // 0: 有轉帳, 1: 只有對話, 2: 最後通牒, 3: 連保人
 
   // Checklist items state
-  final List<bool> _checklistValues = List.generate(5, (_) => false);
+  final List<bool> _checklistValues = List.generate(7, (_) => false);
   final List<String> _checklistItems = [
     "將所有 LINE 對話截圖備份至相簿或雲端",
     "截圖轉帳紀錄的完整頁面（含帳號與金額）",
     "將本次發出的催告訊息截圖留存",
     "記錄對方帳戶資訊或身分證字號（如果知道）",
-    "避免刪除任何對話記錄"
+    "避免刪除任何對話記錄",
+    "金流避免經手現金，款項往來走轉帳並於備註欄寫明用途",
+    "引導對方以文字明確回覆確認金額與用途（措辭保持中性客觀）"
   ];
 
   @override
@@ -271,11 +273,17 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
               // 4A. Strategy advice
               _buildStrategyAdvice(),
 
+              // New: Legal path advice
+              _buildLegalPathAdvice(state),
+
               // 5A. 3 Collection templates
               _buildMessageTemplates(state),
 
               // 6A. Preservation checklist
               _buildPreservationChecklist(),
+
+              // New: Asset inquiry info
+              _buildAssetInquiryInfo(),
             ] else ...[
               // If they somehow got here without unlocking Protection Pack
               _buildLockedModuleCard(
@@ -495,6 +503,91 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     );
   }
 
+  // New: Legal Path Advice Card
+  Widget _buildLegalPathAdvice(CaseState state) {
+    final amount = state.currentCase.amount;
+    return Card(
+      color: const Color(0xFFF1F8E9),
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.gavel, color: Color(0xFF558B2F), size: 20),
+                SizedBox(width: 8),
+                Text(
+                  "下一步可以怎麼做：法律途徑參考",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF33691E)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            _buildLegalPathItem(
+              "小額訴訟程序",
+              "金額在新台幣 10 萬元以下適用。裁判費約 1,000 元，原則上開庭當天即可獲得判決，程序相對簡便快速。",
+              isRecommended: amount > 0 && amount <= 100000,
+            ),
+            _buildLegalPathItem(
+              "聲請支付命令",
+              "金額在新台幣 50 萬元以下適用。費用約 500 元，流程約 1-2 個月，對方 20 天內未提出異議即生效，效力等同確定判決。",
+              isRecommended: amount > 100000 && amount <= 500000,
+            ),
+            _buildLegalPathItem(
+              "鄉鎮市區調解委員會",
+              "免費。調解成立後經法院核定，效力等同判決確定，適合希望先嘗試協商的情況。",
+              isRecommended: false,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "以上僅為一般性程序資訊整理，實際適用條件請依個案狀況並諮詢專業律師確認。",
+              style: TextStyle(fontSize: 11, color: AppTheme.textMuted, height: 1.4),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLegalPathItem(String title, String desc, {bool isRecommended = false}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isRecommended ? const Color(0xFFDCEDC8) : Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: isRecommended ? const Color(0xFF7CB342) : const Color(0xFFE0E0E0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                title,
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+              ),
+              if (isRecommended) ...[
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF558B2F),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text("依您填寫金額適用", style: TextStyle(fontSize: 10, color: Colors.white)),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(desc, style: const TextStyle(fontSize: 12, color: AppTheme.textDark, height: 1.4)),
+        ],
+      ),
+    );
+  }
+
   // 5A. Template Messages
   Widget _buildMessageTemplates(CaseState state) {
     return Card(
@@ -622,6 +715,44 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
                 dense: true,
               );
             }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // New: Asset Inquiry Info Card
+  Widget _buildAssetInquiryInfo() {
+    return Card(
+      color: const Color(0xFFFAFAFA),
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.fact_check, color: AppTheme.primaryNavy, size: 20),
+                SizedBox(width: 8),
+                Text(
+                  "取得法律文件後：財產查調資訊",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.primaryNavy),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "當你取得支付命令、判決，或經法院核定的調解書後，可持上述文件向國稅局申請對方的：",
+              style: TextStyle(fontSize: 13, color: AppTheme.textDark, height: 1.5),
+            ),
+            const SizedBox(height: 6),
+            _buildStrategyBullet("年度綜合所得稅各類所得資料清單"),
+            _buildStrategyBullet("財產歸屬資料清單"),
+            const SizedBox(height: 8),
+            const Text(
+              "這兩項資料能協助確認對方名下財產，作為後續強制執行的查調依據。此為資訊性說明，實際申請流程請依國稅局最新規定辦理，建議諮詢專業律師協助。",
+              style: TextStyle(fontSize: 11, color: AppTheme.textMuted, height: 1.4),
+            ),
           ],
         ),
       ),
