@@ -33,6 +33,27 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     "引導對方以文字明確回覆確認金額與用途（措辭保持中性客觀）"
   ];
 
+  // Promissory note / IOU self-check state
+  final List<bool> _promissoryNoteValues = List.generate(4, (_) => false);
+  final List<Map<String, String>> _promissoryNoteItems = [
+    {
+      'title': '到期日（清償期）是否明確填寫',
+      'detail': '本票若未填寫到期日，依票據法第120條視為「見票即付」，本票仍有效，但建議明確填寫以利計算3年票據權利時效。借據／契約則須明確寫出還款日期；若未約定清償期，依民法第478條，債權人須先給予債務人一個月以上的法定催告期限才能請求還款。',
+    },
+    {
+      'title': '約定利息是否合法且明確',
+      'detail': '民法第205條規定週年利率上限為16%，超過部分約定無效。若契約完全沒寫利息，原則上視為無息借貸（商業往來則可依民法第203條請求年息5%）。',
+    },
+    {
+      'title': '違約金條款是否明確約定',
+      'detail': '若未約定違約金，到期後僅能請求法定遲延利息（通常年息5%）。若有明確約定逾期違約金，法院仍有權依民法第252條酌減過高金額。',
+    },
+    {
+      'title': '簽名蓋章是否完整（避免僅蓋指印）',
+      'detail': '民法第3條雖規定指印具同等效力，但實務上指印鑑定困難，若債務人到庭抵賴，債權人將面臨舉證困難。建議務必取得親筆簽名並蓋上印鑑章或便章。',
+    },
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -276,11 +297,17 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
               // New: Legal path advice
               _buildLegalPathAdvice(state),
 
+              // New: Interest cap info
+              _buildInterestCapInfo(),
+
               // New: Limitation reminder
               _buildLimitationReminder(state),
 
               // 5A. 3 Collection templates
               _buildMessageTemplates(state),
+
+              // New: Promissory note checklist
+              _buildPromissoryNoteChecklist(),
 
               // 6A. Preservation checklist
               _buildPreservationChecklist(),
@@ -692,6 +719,80 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     );
   }
 
+  // New: Interest Rate Cap Explanation Card
+  Widget _buildInterestCapInfo() {
+    return Card(
+      color: const Color(0xFFE8EAF6),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+          childrenPadding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+          title: const Row(
+            children: [
+              Icon(Icons.percent, color: Color(0xFF283593), size: 20),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  "法定利息上限說明（民法第205條）",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
+                ),
+              ),
+            ],
+          ),
+          children: [
+            const Text(
+              "民國110年（2021年）7月20日起，民法第205條修正，約定利率上限由20%調降為16%，點擊以下項目了解詳細規則：",
+              style: TextStyle(fontSize: 12, color: AppTheme.textMuted, height: 1.5),
+            ),
+            const SizedBox(height: 10),
+            _buildInterestCapPoint(
+              "超過16%的法律效果",
+              "新法規定「超過部分之約定，無效」，即使債務人已自行支付超過16%的利息，事後仍可依不當得利請求債權人返還多收的部分。",
+            ),
+            _buildInterestCapPoint(
+              "本金認定：以實拿金額為準",
+              "若有「預扣利息」情形（例如約定借10萬元、當場扣除第一年利息2萬元，債務人實拿8萬元），法院實務上會以實拿的8萬元作為本金計算16%上限，而非原始約定金額。",
+            ),
+            _buildInterestCapPoint(
+              "特殊行業例外",
+              "銀行信用卡、現金卡循環利率上限為15%（銀行法第47條之1）；當舖業上限為30%，含利息與倉棧費（當舖業法第11條），是合法特許行業中唯一的例外高利率。",
+            ),
+            _buildInterestCapPoint(
+              "與刑法重利罪的區別",
+              "民法16%上限屬於「民事責任無效限制」；刑法第344條重利罪則須額外具備「乘他人急迫、輕率、無經驗或難以求助之處境」等要件，是否成立須由法院依個案判斷，並非利率超過16%就一定觸犯刑責。",
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "以上為一般性法律科普整理，實際個案適用仍請諮詢專業律師確認。",
+              style: TextStyle(fontSize: 11, color: AppTheme.textMuted, height: 1.4),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInterestCapPoint(String title, String desc) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF1A237E)),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            desc,
+            style: const TextStyle(fontSize: 12, color: AppTheme.textDark, height: 1.5),
+          ),
+        ],
+      ),
+    );
+  }
+
   // 5A. Template Messages
   Widget _buildMessageTemplates(CaseState state) {
     return Card(
@@ -774,6 +875,78 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
               fontSize: 13,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  // New: Promissory Note / IOU Completeness Self-Check
+  Widget _buildPromissoryNoteChecklist() {
+    return Card(
+      color: const Color(0xFFF3E5F5),
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.fact_check_outlined, color: Color(0xFF6A1B9A), size: 20),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    "本票／借據完整度自我體檢表",
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF4A148C)),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              "若您手邊持有書面文件，請逐一盤點以下要件是否齊全，點擊項目可展開法律說明：",
+              style: TextStyle(fontSize: 12, color: AppTheme.textMuted, height: 1.4),
+            ),
+            const SizedBox(height: 8),
+            ...List.generate(_promissoryNoteItems.length, (index) {
+              return Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  childrenPadding: const EdgeInsets.only(bottom: 8, left: 4, right: 4),
+                  title: Row(
+                    children: [
+                      Checkbox(
+                        value: _promissoryNoteValues[index],
+                        activeColor: AppTheme.primaryNavy,
+                        onChanged: (val) {
+                          setState(() {
+                            _promissoryNoteValues[index] = val ?? false;
+                          });
+                        },
+                      ),
+                      Expanded(
+                        child: Text(
+                          _promissoryNoteItems[index]['title']!,
+                          style: const TextStyle(fontSize: 13, color: Color(0xFF4A148C), fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                  children: [
+                    Text(
+                      _promissoryNoteItems[index]['detail']!,
+                      style: const TextStyle(fontSize: 12, color: AppTheme.textDark, height: 1.5),
+                    ),
+                  ],
+                ),
+              );
+            }),
+            const SizedBox(height: 4),
+            const Text(
+              "若沒有書面文件，建議盡快補簽或保留其他客觀證據（如轉帳紀錄），實際文件效力請諮詢專業律師確認。",
+              style: TextStyle(fontSize: 11, color: AppTheme.textMuted, height: 1.4),
+            ),
+          ],
         ),
       ),
     );
