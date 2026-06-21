@@ -218,12 +218,12 @@ class PdfService {
     switch (templateIndex) {
       case 0: // 有轉帳紀錄
       case 1: // 只有對話紀錄
-        return "關於台端積欠本人新臺幣 $amountText 元債務，請台端於函到七日內清償，特此函告。";
+        return "關於台端積欠本人新臺幣\u00A0$amountText\u00A0元債務，請台端於函到七日內清償，特此函告。";
       case 2: // 最後通牒
-        return "關於台端積欠本人新臺幣 $amountText 元債務，請台端於函到七日內清償，否則本人將立即採取法律途徑解決，特此通知。";
+        return "關於台端積欠本人新臺幣\u00A0$amountText\u00A0元債務，請台端於函到七日內清償，否則本人將立即採取法律途徑解決，特此通知。";
       case 3: // 連帶保證人
       default:
-        return "關於台端積欠本人新臺幣 $amountText 元債務催清償事宜。";
+        return "關於台端積欠本人新臺幣\u00A0$amountText\u00A0元債務催清償事宜。";
     }
   }
 
@@ -233,10 +233,10 @@ class PdfService {
     
     // Dates formatted
     final borrowRoc = CaseState.getRocDateParts(caseModel.borrowDate);
-    final borrowDateStr = "中華民國 ${borrowRoc['year']} 年 ${borrowRoc['month']} 月 ${borrowRoc['day']} 日";
+    final borrowDateStr = "中華民國\u00A0${borrowRoc['year']}\u00A0年\u00A0${borrowRoc['month']}\u00A0月\u00A0${borrowRoc['day']}\u00A0日";
     
     final repayRoc = CaseState.getRocDateParts(caseModel.repayDate);
-    final repayDateStr = "中華民國 ${repayRoc['year']} 年 ${repayRoc['month']} 月 ${repayRoc['day']} 日";
+    final repayDateStr = "中華民國\u00A0${repayRoc['year']}\u00A0年\u00A0${repayRoc['month']}\u00A0月\u00A0${repayRoc['day']}\u00A0日";
 
     // Safe values (empty value protection)
     final service = (caseModel.serviceDescription?.trim().isEmpty ?? true)
@@ -258,7 +258,7 @@ class PdfService {
             ? "${firstSentence}本人已於$transferDateStr將款項轉帳至台端指定帳戶，此有轉帳紀錄可稽。"
             : "${firstSentence}本人已將款項轉帳至台端指定帳戶，此有轉帳紀錄可稽。",
           "詎料，台端屆期迄未依約清償上開借款，經本人多次催告，台端仍置之不理，顯已構成債務不履行。",
-          "為此，特函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣 $amountText 元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
+          "為此，特函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣\u00A0$amountText\u00A0元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
           "如台端逾期仍未清償，本人將不另通知，逕行依法向法院提起訴訟，請求返還借款及利息，並請求台端負擔所有訴訟費用及相關損害賠償，屆時恐增訟累，非本人所樂見。"
         ];
 
@@ -268,7 +268,7 @@ class PdfService {
         return [
           "${firstSentence}此有雙方 $chatApp 對話紀錄可稽。",
           "詎料，台端屆期迄未依約清償上開借款，經本人多次催告，台端仍置之不理，顯已構成債務不履行。",
-          "為此，特函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣 $amountText 元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
+          "為此，特函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣\u00A0$amountText\u00A0元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
           "如台端逾期仍未清償，本人將不另通知，逕行依法向法院提起訴訟，請求返還借款及利息，並請求台端負擔所有訴訟費用及相關損害賠償，屆時恐增訟累，非本人所樂見。"
         ];
 
@@ -283,7 +283,7 @@ class PdfService {
         return [
           hasAnyEvidence ? "${firstSentence}此有 $evidence 可稽。" : firstSentence,
           "詎料，台端屆期迄未依約清償上開借款，經本人多次催告，台端仍置之不理，顯已構成債務不履行。",
-          "本人已多次給予台端清償機會，惟台端均未積極處理。為維護本人合法權益，特再次函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣 $amountText 元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
+          "本人已多次給予台端清償機會，惟台端均未積極處理。為維護本人合法權益，特再次函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣\u00A0$amountText\u00A0元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
           "如台端逾期仍未清償，本人將不再容忍，屆時將立即向法院提起民事訴訟，請求返還借款及利息，並請求台端負擔所有訴訟費用、律師費用及相關損害賠償。同時，本人將依法循一切合法途徑維護自身權益，請台端審慎考量，切勿自誤。"
         ];
 
@@ -301,7 +301,7 @@ class PdfService {
             ? "${firstSentence}台端就上開債務，業已簽立連帶保證契約，同意與主債務人 $debtorName 負連帶清償責任，此有 $evidence4 可稽。"
             : "${firstSentence}台端就上開債務，業已簽立連帶保證契約，同意與主債務人 $debtorName 負連帶清償責任。",
           "詎料，主債務人 $debtorName 屆期迄未依約清償上開借款，經本人多次催告，主債務人仍置之不理，顯已構成債務不履行。",
-          "依民法第739條及相關規定，台端身為連帶保證人，應與主債務人負同一清償責任，且不得主張民法第745條之先訴抗辯權。為此，特函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣 $amountText 元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
+          "依民法第739條及相關規定，台端身為連帶保證人，應與主債務人負同一清償責任，且不得主張民法第745條之先訴抗辯權。為此，特函請台端於本函送達之翌日起七日內，立即清償上開積欠之借款新臺幣\u00A0$amountText\u00A0元整，及自$repayDateStr起至清償日止，按年息百分之五計算之利息。",
           "如台端逾期仍未清償，本人將不另通知，逕行依法向法院提起訴訟，請求台端負連帶清償責任，並請求台端負擔所有訴訟費用及相關損害賠償，屆時恐增訟累，非本人所樂見。"
         ];
 
@@ -319,22 +319,22 @@ class PdfService {
   }) {
     final amountText = caseModel.amount.toStringAsFixed(0);
     final borrowRoc = CaseState.getRocDateParts(caseModel.borrowDate);
-    final borrowDateStr = "中華民國 ${borrowRoc['year']} 年 ${borrowRoc['month']} 月 ${borrowRoc['day']} 日";
+    final borrowDateStr = "中華民國\u00A0${borrowRoc['year']}\u00A0年\u00A0${borrowRoc['month']}\u00A0月\u00A0${borrowRoc['day']}\u00A0日";
     final repayRoc = CaseState.getRocDateParts(caseModel.repayDate);
-    final repayDateStr = "中華民國 ${repayRoc['year']} 年 ${repayRoc['month']} 月 ${repayRoc['day']} 日";
+    final repayDateStr = "中華民國\u00A0${repayRoc['year']}\u00A0年\u00A0${repayRoc['month']}\u00A0月\u00A0${repayRoc['day']}\u00A0日";
 
     switch (caseModel.debtType) {
       case 'advance':
-        return "查$debtorText曾委託本人於$borrowDateStr代為墊付新臺幣 $amountText 元整，雙方約定由$debtorText於$repayDateStr前償還上開代墊款項。";
+        return "查$debtorText曾委託本人於$borrowDateStr代為墊付新臺幣\u00A0$amountText\u00A0元整，雙方約定由$debtorText於$repayDateStr前償還上開代墊款項。";
       case 'commercial':
-        return "查本人已依約於$borrowDateStr完成$debtorText委託之$service，依約$debtorText應給付本人新臺幣 $amountText 元整，並約定於$repayDateStr前完成付款。";
+        return "查本人已依約於$borrowDateStr完成$debtorText委託之$service，依約$debtorText應給付本人新臺幣\u00A0$amountText\u00A0元整，並約定於$repayDateStr前完成付款。";
       case 'rental':
-        return "查$debtorText就本人所有之$rental自$borrowDateStr起負有給付租金／押金新臺幣 $amountText 元整之義務，應於$repayDateStr前給付完畢。";
+        return "查$debtorText就本人所有之$rental自$borrowDateStr起負有給付租金／押金新臺幣\u00A0$amountText\u00A0元整之義務，應於$repayDateStr前給付完畢。";
       case 'online_shopping':
-        return "查$debtorText曾於$borrowDateStr委託本人代為購買商品，本人已依約代墊購買費用新臺幣 $amountText 元整，$debtorText應於$repayDateStr前返還上開款項。";
+        return "查$debtorText曾於$borrowDateStr委託本人代為購買商品，本人已依約代墊購買費用新臺幣\u00A0$amountText\u00A0元整，$debtorText應於$repayDateStr前返還上開款項。";
       case 'loan':
       default:
-        return "查$debtorText曾於$borrowDateStr向本人借款新臺幣 $amountText 元整，並約定於$repayDateStr前清償完畢。";
+        return "查$debtorText曾於$borrowDateStr向本人借款新臺幣\u00A0$amountText\u00A0元整，並約定於$repayDateStr前清償完畢。";
     }
   }
 
