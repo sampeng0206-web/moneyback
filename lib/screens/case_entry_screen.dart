@@ -43,6 +43,7 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
   bool _hasTransferRecord = false;
   bool _hasCash = false;
   bool _isUnprovable = false;
+  bool get _isNonCashDebtType => ['commercial', 'rental', 'online_shopping'].contains(_selectedDebtType);
 
   bool _hasLineScreenshots = false;
   bool _hasVerbalPromise = false;
@@ -590,15 +591,15 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
               const SizedBox(height: 16),
 
               // 8. Money proof Checkboxes
-              _buildSectionHeader("你有哪些金流證明？"),
+              _buildSectionHeader(_isNonCashDebtType ? "你有哪些交付／履行證明？" : "你有哪些金流證明？"),
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
                       CheckboxListTile(
-                        title: const Text("有銀行匯款／轉帳紀錄", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                        subtitle: const Text("（需填寫轉帳日期）", style: TextStyle(fontSize: 12)),
+                        title: Text(_isNonCashDebtType ? "有出貨單／簽收紀錄／監視器影像等紀錄" : "有銀行匯款／轉帳紀錄", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                        subtitle: Text(_isNonCashDebtType ? "（需填寫紀錄日期）" : "（需填寫轉帳日期）", style: const TextStyle(fontSize: 12)),
                         value: _hasTransferRecord,
                         activeColor: AppTheme.primaryNavy,
                         onChanged: (val) {
@@ -616,7 +617,7 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text("轉帳日期", style: TextStyle(color: AppTheme.primaryNavy, fontSize: 12, fontWeight: FontWeight.bold)),
+                              Text(_isNonCashDebtType ? "紀錄日期" : "轉帳日期", style: const TextStyle(color: AppTheme.primaryNavy, fontSize: 12, fontWeight: FontWeight.bold)),
                               const SizedBox(height: 6),
                               InkWell(
                                 onTap: () => _selectDate(context, _transferDate ?? _borrowDate ?? DateTime.now(), (date) => _transferDate = date),
@@ -646,7 +647,7 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
                           ),
                         ),
                       CheckboxListTile(
-                        title: const Text("給了現金（無紀錄）", style: TextStyle(fontSize: 14)),
+                        title: Text(_isNonCashDebtType ? "僅有口頭約定，無書面或影像紀錄" : "給了現金（無紀錄）", style: const TextStyle(fontSize: 14)),
                         value: _hasCash,
                         activeColor: AppTheme.primaryNavy,
                         onChanged: (val) {

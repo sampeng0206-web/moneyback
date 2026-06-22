@@ -237,9 +237,10 @@ class CaseState extends ChangeNotifier {
       items.add("缺少對方明確身分資料");
     }
     
-    // ⚠️ 無金流證明，僅有口頭或對話紀錄 — 僅當用戶未勾選「有銀行匯款」時顯示
+    // ⚠ 缺少書面/金流證明 — 僅當用戶未勾選「有銀行匯款」時顯示，文字依債務類型動態調整
     if (!_currentCase.hasTransferRecord) {
-      items.add("無金流證明，僅有口頭或對話紀錄");
+      final isNonCashType = ['commercial', 'rental', 'online_shopping'].contains(_currentCase.debtType);
+      items.add(isNonCashType ? "無交付／履行證明，僅有口頭約定" : "無金流證明，僅有口頭或對話紀錄");
     }
     return items;
   }

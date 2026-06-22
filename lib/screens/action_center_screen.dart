@@ -240,7 +240,15 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
           duration: Duration(seconds: 4),
         ),
       );
-      await Share.shareXFiles([XFile(file.path)]);
+      final box = context.findRenderObject() as RenderBox?;
+      final sharePositionOrigin = box != null
+          ? box.localToGlobal(Offset.zero) & box.size
+          : const Rect.fromLTWH(0, 0, 1, 1);
+
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        sharePositionOrigin: sharePositionOrigin,
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -463,7 +471,7 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     List<String> proofs = [];
     if (model.hasTransferRecord) proofs.add("銀行轉帳紀錄");
     if (model.hasCash) proofs.add("現金交付無紀錄");
-    if (model.isUnprovable) proofs.add("無法證明金流");
+    if (model.isUnprovable) proofs.add("無法證明");
     if (model.hasLineScreenshots) proofs.add("${model.chatAppName}對話截圖");
     if (model.hasVerbalPromise) proofs.add("僅口頭承諾");
     if (model.hasNoResponse) proofs.add("對方已不回應");

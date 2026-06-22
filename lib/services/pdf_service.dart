@@ -151,10 +151,7 @@ class PdfService {
               children: [
                 pw.Text("主旨：", style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 14)),
                 pw.Expanded(
-                  child: pw.Text(
-                    subjectText,
-                    style: const pw.TextStyle(fontSize: 14),
-                  ),
+                  child: _buildWrappedExplanation(subjectText),
                 ),
               ],
             ),
@@ -176,10 +173,7 @@ class PdfService {
                         style: const pw.TextStyle(fontSize: 14),
                       ),
                       pw.Expanded(
-                        child: pw.Text(
-                          explanations[index],
-                          style: const pw.TextStyle(fontSize: 14)
-                        ),
+                        child: _buildWrappedExplanation(explanations[index]),
                       ),
                     ],
                   ),
@@ -211,6 +205,29 @@ class PdfService {
     );
 
     return pdf.save();
+  }
+
+  // Helper: Build wrapped text widget that keeps number+unit phrases atomic (prevents awkward line breaks)
+  static pw.Widget _buildWrappedExplanation(String text) {
+    final pattern = RegExp(r'[\d,]+[\u00A0\s]*[元日年月]');
+    final widgets = <pw.Widget>[];
+    int lastEnd = 0;
+    void addPlain(String s) {
+      for (final ch in s.runes) {
+        widgets.add(pw.Text(String.fromCharCode(ch), style: const pw.TextStyle(fontSize: 14)));
+      }
+    }
+    for (final match in pattern.allMatches(text)) {
+      if (match.start > lastEnd) {
+        addPlain(text.substring(lastEnd, match.start));
+      }
+      widgets.add(pw.Text(text.substring(match.start, match.end), style: const pw.TextStyle(fontSize: 14)));
+      lastEnd = match.end;
+    }
+    if (lastEnd < text.length) {
+      addPlain(text.substring(lastEnd));
+    }
+    return pw.Wrap(children: widgets);
   }
 
   // Helper: Escape text and convert non-ASCII characters to RTF unicode format
