@@ -2,7 +2,7 @@ name: moneyback
 description: "鋡急??Ｘ????捱蝑??菜?靽?拇?"
 publish_to: 'none'
 
-version: 1.0.0+5
+version: 1.0.0+6
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
