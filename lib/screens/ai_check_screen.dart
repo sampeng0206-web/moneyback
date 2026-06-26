@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../providers/case_state.dart';
@@ -336,6 +337,39 @@ class _AiCheckScreenState extends State<AiCheckScreen> {
                     }
                   },
                   cardBgColor: const Color(0xFFF5F7FF),
+                ),
+
+                // Legal links required for subscription apps
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () => launchUrl(Uri.parse('https://sampeng0206-web.github.io/moneyback/privacy-policy.html')),
+                        child: const Text(
+                          "隱私權政策",
+                          style: TextStyle(
+                            color: AppTheme.primaryNavy,
+                            fontSize: 13,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                      const Text("　｜　", style: TextStyle(color: AppTheme.textMuted, fontSize: 13)),
+                      GestureDetector(
+                        onTap: () => launchUrl(Uri.parse('https://www.apple.com/legal/internet-services/itunes/dev/stdeula/')),
+                        child: const Text(
+                          "使用條款（EULA）",
+                          style: TextStyle(
+                            color: AppTheme.primaryNavy,
+                            fontSize: 13,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 // 10. Bottom disclaimer
