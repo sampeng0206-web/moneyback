@@ -23,7 +23,9 @@ workflows:
         script: cd ios && pod install --repo-update
       - name: Enforce Codemagic Profiles Matching (iOS Only)
         script: |
-          xcode-project use-profiles --project ios/Runner.xcodeproj
+          xcode-project use-profiles \
+            --project ios/Runner.xcodeproj \
+            --certificate-name "moneyback_dist"
           cat > /Users/builder/export_options.plist << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
