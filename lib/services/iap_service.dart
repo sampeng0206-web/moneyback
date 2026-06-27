@@ -48,10 +48,8 @@ class IapService {
   // Purchase a product
   static Future<bool> purchaseProduct(String productId) async {
     if (!_initialized) {
-      debugPrint("RevenueCat not initialized. Simulating purchase for $productId...");
-      // Simulate network delay and return success for mock testing
-      await Future.delayed(const Duration(milliseconds: 500));
-      return true;
+      debugPrint("RevenueCat not initialized. Cannot process purchase.");
+      throw Exception('購買服務尚未初始化，請重新開啟 App 後再試。');
     }
 
     try {

@@ -15,7 +15,11 @@ void main() async {
   
   // Initialize Background & Local Services
   await NotificationService.initialize();
-  await IapService.initialize();
+  try {
+    await IapService.initialize();
+  } catch (e) {
+    debugPrint('IapService init failed: $e');
+  }
   await AdService.initialize();
   
   runApp(
