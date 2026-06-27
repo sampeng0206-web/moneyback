@@ -20,8 +20,9 @@ workflows:
         script: cd ios && pod install --repo-update
       - name: Set up code signing
         script: |
+          echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           keychain initialize
-          keychain add-certificates --certificate moneyback_dist
+          keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
           xcode-project use-profiles
           cat > /Users/builder/export_options.plist << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
