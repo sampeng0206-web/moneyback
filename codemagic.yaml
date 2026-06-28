@@ -25,7 +25,6 @@ workflows:
           keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
           app-store-connect fetch-signing-files com.moneyback.app \
             --type IOS_APP_STORE \
-            --certificate-key /tmp/certificate.p12 \
             --issuer-id $APP_STORE_CONNECT_ISSUER_ID \
             --key-id $APP_STORE_CONNECT_KEY_IDENTIFIER \
             --private-key @env:APP_STORE_CONNECT_PRIVATE_KEY
