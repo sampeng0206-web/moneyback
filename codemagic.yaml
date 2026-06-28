@@ -21,7 +21,7 @@ workflows:
       - name: Set up code signing
         script: |
           keychain initialize
-          keychain add-certificates
+          keychain add-certificates --certificates moneyback_dist
           app-store-connect fetch-signing-files com.moneyback.app \
             --type IOS_APP_STORE \
             --issuer-id $APP_STORE_CONNECT_ISSUER_ID \
