@@ -45,6 +45,7 @@ workflows:
           </plist>
           EOF
           flutter build ipa --release \
+            --build-number=8 \
             --export-options-plist=/tmp/export_options.plist
     artifacts:
       - build/ios/ipa/*.ipa
