@@ -20,9 +20,8 @@ workflows:
         script: cd ios && pod install --repo-update
       - name: Set up code signing
         script: |
-          echo $CM_CERTIFICATE | base64 --decode > /tmp/certificate.p12
           keychain initialize
-          keychain add-certificates --certificate /tmp/certificate.p12 --certificate-password $CM_CERTIFICATE_PASSWORD
+          keychain add-certificates
           app-store-connect fetch-signing-files com.moneyback.app \
             --type IOS_APP_STORE \
             --issuer-id $APP_STORE_CONNECT_ISSUER_ID \
