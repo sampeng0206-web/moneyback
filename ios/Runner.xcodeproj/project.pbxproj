@@ -314,6 +314,7 @@
 				SWIFT_VERSION = 5.0;
 			CODE_SIGN_STYLE = Manual;
 			DEVELOPMENT_TEAM = V573KVW28N;
+			PROVISIONING_PROFILE_SPECIFIER = moneyback_appstore;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -387,6 +388,7 @@
 				SWIFT_VERSION = 5.0;
 			CODE_SIGN_STYLE = Manual;
 			DEVELOPMENT_TEAM = V573KVW28N;
+			PROVISIONING_PROFILE_SPECIFIER = moneyback_appstore;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -442,6 +444,7 @@
 				SWIFT_VERSION = 5.0;
 			CODE_SIGN_STYLE = Manual;
 			DEVELOPMENT_TEAM = V573KVW28N;
+			PROVISIONING_PROFILE_SPECIFIER = moneyback_appstore;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -458,6 +461,7 @@
 				SWIFT_VERSION = 5.0;
 			CODE_SIGN_STYLE = Manual;
 			DEVELOPMENT_TEAM = V573KVW28N;
+			PROVISIONING_PROFILE_SPECIFIER = moneyback_appstore;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
