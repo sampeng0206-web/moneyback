@@ -5,10 +5,13 @@ workflows:
     environment:
       groups:
         - Ios-credentials
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.moneyback.app
       vars:
         APP_STORE_CONNECT_ISSUER_ID: 5b4d9000-41c4-470d-8f89-4154cb59bd33
         APP_STORE_CONNECT_KEY_IDENTIFIER: 9YR5628QVZ
-      flutter: stable
+      flutter: 3.27.4
       xcode: latest
       cocoapods: default
     scripts:
@@ -18,35 +21,6 @@ workflows:
         script: flutter pub get
       - name: Pod install
         script: cd ios && pod install --repo-update
-      - name: Set up code signing
-        script: |
-          keychain initialize
-          keychain add-certificates --certificates moneyback_dist
-          app-store-connect fetch-signing-files com.moneyback.app \
-            --type IOS_APP_STORE \
-            --issuer-id $APP_STORE_CONNECT_ISSUER_ID \
-            --key-id $APP_STORE_CONNECT_KEY_IDENTIFIER \
-            --private-key @env:APP_STORE_CONNECT_PRIVATE_KEY
-          xcode-project use-profiles --project ios/Runner.xcodeproj
-          cat > /Users/builder/export_options.plist << 'EOF'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>com.moneyback.app</key>
-              <string>moneyback_appstore</string>
-            </dict>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>teamID</key>
-            <string>V573KVW28N</string>
-          </dict>
-          </plist>
-          EOF
       - name: Build iOS release
         script: |
           flutter build ipa --release \
