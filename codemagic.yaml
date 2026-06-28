@@ -26,6 +26,10 @@ workflows:
       - name: Build iOS release
         script: |
           flutter build ipa --release
+          echo "=== IPA files found ==="
+          find . -name "*.ipa" 2>/dev/null || echo "No IPA found"
+          echo "=== build/ios contents ==="
+          ls -la build/ios/ 2>/dev/null || echo "build/ios not found"
     artifacts:
       - build/ios/ipa/*.ipa
       - "**/*.ipa"
