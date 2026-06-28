@@ -6,8 +6,6 @@ workflows:
       groups:
         - Ios-credentials
       ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.moneyback.app
         provisioning_profiles:
           - moneyback_appstore
         certificates:
