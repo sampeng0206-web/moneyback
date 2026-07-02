@@ -98,9 +98,9 @@ class IapService {
   static List<String> _getActiveEntitlementsFromInfo(CustomerInfo customerInfo) {
     List<String> entitlements = [];
     
-    // Check for the moneyback-pro entitlement
-    if (customerInfo.entitlements.all['moneyback-pro']?.isActive ?? false) {
-      entitlements.add('moneyback-pro');
+    // Check for the MoneyBack Pro entitlement
+    if (customerInfo.entitlements.all['MoneyBack Pro']?.isActive ?? false) {
+      entitlements.add('MoneyBack Pro');
       entitlements.add(protectionPackId);
       entitlements.add(actionPackId);
       entitlements.add(yearlyId);
@@ -125,7 +125,7 @@ class IapService {
 
   // Helper to check if customer has a specific entitlement active
   static bool _hasActiveEntitlement(CustomerInfo customerInfo, String productId) {
-    if (customerInfo.entitlements.all['moneyback-pro']?.isActive ?? false) {
+    if (customerInfo.entitlements.all['MoneyBack Pro']?.isActive ?? false) {
       return true;
     }
 
