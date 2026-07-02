@@ -16,22 +16,35 @@ class AiCheckScreen extends StatefulWidget {
 class _AiCheckScreenState extends State<AiCheckScreen> {
   bool _isProcessing = false;
 
-  // Process purchase simulation
+  // Process purchase
   Future<void> _handlePurchase(String productId, String name) async {
     setState(() {
       _isProcessing = true;
     });
 
     final state = Provider.of<CaseState>(context, listen: false);
-    
-    // Simulate buying the product
-    await state.simulatePurchaseMock(productId);
-    
+
+    bool success = false;
+    try {
+      if (productId == "moneyback.protection.pack.190") {
+        success = await state.buyProtectionPack();
+      } else if (productId == "moneyback.action.pack.190") {
+        success = await state.buyActionPack();
+      } else if (productId == "moneyback.yearly.490") {
+        success = await state.buyYearlySubscription();
+      }
+    } catch (e) {
+      success = false;
+      debugPrint("Purchase error: $e");
+    }
+
     setState(() {
       _isProcessing = false;
     });
 
-    if (mounted) {
+    if (!mounted) return;
+
+    if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("🎉 成功解鎖：$name"),
@@ -39,9 +52,46 @@ class _AiCheckScreenState extends State<AiCheckScreen> {
           duration: const Duration(seconds: 2),
         ),
       );
-      
-      // Auto navigate to Action Center (Screen 3) after purchase
       Navigator.pushNamed(context, '/action_center');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("購買未完成，請稍後再試或聯絡客服。"),
+          backgroundColor: AppTheme.dangerRed,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleRestore() async {
+    setState(() {
+      _isProcessing = true;
+    });
+
+    final state = Provider.of<CaseState>(context, listen: false);
+    await state.restorePurchases();
+
+    setState(() {
+      _isProcessing = false;
+    });
+
+    if (!mounted) return;
+
+    if (state.isPremium) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("✅ 已成功恢復您的購買紀錄"),
+          backgroundColor: AppTheme.actionGreen,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("找不到可恢復的購買紀錄"),
+          backgroundColor: AppTheme.textMuted,
+        ),
+      );
     }
   }
 
@@ -361,6 +411,18 @@ class _AiCheckScreenState extends State<AiCheckScreen> {
                         onTap: () => launchUrl(Uri.parse('https://www.apple.com/legal/internet-services/itunes/dev/stdeula/')),
                         child: const Text(
                           "使用條款（EULA）",
+                          style: TextStyle(
+                            color: AppTheme.primaryNavy,
+                            fontSize: 13,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                      const Text("　｜　", style: TextStyle(color: AppTheme.textMuted, fontSize: 13)),
+                      GestureDetector(
+                        onTap: _isProcessing ? null : _handleRestore,
+                        child: const Text(
+                          "恢復購買",
                           style: TextStyle(
                             color: AppTheme.primaryNavy,
                             fontSize: 13,
