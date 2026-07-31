@@ -57,3 +57,30 @@ workflows:
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_testflight: true
+
+  android-release:
+    name: MoneyBack Android Release
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      groups:
+        - android_signing
+      flutter: stable
+    scripts:
+      - name: Set up keystore
+        script: |
+          echo "$CM_KEYSTORE" | base64 --decode > android/moneyback_keystore.jks
+      - name: Set up key.properties
+        script: |
+          cat > android/key.properties << EOF
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyPassword=$CM_KEY_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          storeFile=moneyback_keystore.jks
+          EOF
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Build Android App Bundle (AAB)
+        script: flutter build appbundle --release
+    artifacts:
+      - build/app/outputs/bundle/release/*.aab
