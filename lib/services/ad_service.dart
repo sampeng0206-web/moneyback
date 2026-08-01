@@ -1,12 +1,19 @@
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdService {
-  static const String _bannerAdUnitId = 'ca-app-pub-3755777658581400/9592306171';
-  static const String _interstitialAdUnitId = 'ca-app-pub-3755777658581400/2835326136';
+  static const String _iosBannerAdUnitId = 'ca-app-pub-3755777658581400/9592306171';
+  static const String _androidBannerAdUnitId = 'ca-app-pub-3755777658581400/3683410892';
+
+  static const String _iosInterstitialAdUnitId = 'ca-app-pub-3755777658581400/2835326136';
+  static const String _androidInterstitialAdUnitId = 'ca-app-pub-3755777658581400/3916832301';
 
   static InterstitialAd? _interstitialAd;
   static bool _isInterstitialLoading = false;
+
+  static String get _bannerAdUnitId => Platform.isIOS ? _iosBannerAdUnitId : _androidBannerAdUnitId;
+  static String get _interstitialAdUnitId => Platform.isIOS ? _iosInterstitialAdUnitId : _androidInterstitialAdUnitId;
 
   static Future<void> initialize() async {
     await MobileAds.instance.initialize();
@@ -90,7 +97,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
 
   void _loadBannerAd() {
     _bannerAd = BannerAd(
-      adUnitId: 'ca-app-pub-3755777658581400/9592306171',
+      adUnitId: AdService._bannerAdUnitId,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
