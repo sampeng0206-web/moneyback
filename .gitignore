@@ -28,3 +28,8 @@ macos/Flutter/Generated.xcconfig
 macos/Flutter/flutter_export_environment.sh
 lib/generated_plugin_registrant.dart
 pubspec.lock
+
+# Android signing credentials
+android/key.properties
+android/*.jks
+android/moneyback_keystore.jks
