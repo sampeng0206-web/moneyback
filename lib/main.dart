@@ -20,7 +20,11 @@ void main() async {
   } catch (e) {
     debugPrint('IapService init failed: $e');
   }
-  await AdService.initialize();
+  try {
+    await AdService.initialize();
+  } catch (e) {
+    debugPrint('AdService init failed: $e');
+  }
   
   runApp(
     ChangeNotifierProvider(
