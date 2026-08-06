@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../models/case_model.dart';
 import '../providers/case_state.dart';
 import '../theme.dart';
-import '../services/ad_service.dart';
+import '../widgets/remote_ad_banner.dart';
 
 class CaseEntryScreen extends StatefulWidget {
   const CaseEntryScreen({super.key});
@@ -267,23 +267,9 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
 
     await Provider.of<CaseState>(context, listen: false).updateCase(updatedCase);
     
-    // Navigate to Screen 2 with Interstitial Ad check
+    // Navigate to Screen 2
     if (!mounted) return;
-    final isPremium = Provider.of<CaseState>(context, listen: false).isPremium;
-    if (isPremium) {
-      if (mounted) {
-        Navigator.pushNamed(context, '/ai_check');
-      }
-    } else {
-      AdService.showInterstitialAd(
-        context: context,
-        onAdDismissed: () {
-          if (mounted) {
-            Navigator.pushNamed(context, '/ai_check');
-          }
-        },
-      );
-    }
+    Navigator.pushNamed(context, '/ai_check');
   }
 
   void _showError(String message) {
@@ -298,7 +284,7 @@ class _CaseEntryScreenState extends State<CaseEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Provider.of<CaseState>(context).isPremium ? null : const BannerAdWidget(),
+      bottomNavigationBar: Provider.of<CaseState>(context).isPremium ? null : const RemoteAdBanner(),
       backgroundColor: AppTheme.bgLight,
       appBar: AppBar(
         backgroundColor: Colors.white,

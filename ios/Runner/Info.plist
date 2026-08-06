@@ -45,8 +45,6 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3755777658581400~8662367884</string>
 	<key>NSUserNotificationUsageDescription</key>
 	<string>還我錢來 需要通知權限，以便在催告期限到期時提醒你採取下一步行動。</string>
 	<key>NSPhotoLibraryUsageDescription</key>

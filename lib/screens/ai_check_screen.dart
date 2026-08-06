@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../providers/case_state.dart';
 import '../theme.dart';
-import '../services/ad_service.dart';
+import '../widgets/remote_ad_banner.dart';
 
 class AiCheckScreen extends StatefulWidget {
   const AiCheckScreen({super.key});
@@ -106,7 +106,7 @@ class _AiCheckScreenState extends State<AiCheckScreen> {
     return Stack(
       children: [
         Scaffold(
-          bottomNavigationBar: state.isPremium ? null : const BannerAdWidget(),
+          bottomNavigationBar: state.isPremium ? null : const RemoteAdBanner(),
           backgroundColor: AppTheme.bgLight,
           appBar: AppBar(
             backgroundColor: AppTheme.primaryNavy,

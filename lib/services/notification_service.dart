@@ -56,7 +56,9 @@ class NotificationService {
         // We attempt to initialize Firebase. In a standalone environment, 
         // this will fail if google-services.json or GoogleService-Info.plist are missing.
         // We catch the error so the app continues running without crashing.
-        await Firebase.initializeApp();
+        if (Firebase.apps.isEmpty) {
+          await Firebase.initializeApp();
+        }
         
         final FirebaseMessaging messaging = FirebaseMessaging.instance;
         

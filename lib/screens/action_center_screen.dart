@@ -10,7 +10,7 @@ import '../providers/case_state.dart';
 import '../services/pdf_service.dart';
 import '../services/notification_service.dart';
 import '../theme.dart';
-import '../services/ad_service.dart';
+import '../widgets/remote_ad_banner.dart';
 
 class ActionCenterScreen extends StatefulWidget {
   const ActionCenterScreen({super.key});
@@ -188,9 +188,7 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
         duration: Duration(seconds: 2),
       ),
     );
-    if (!Provider.of<CaseState>(context, listen: false).isPremium) {
-      AdService.showInterstitialAd(context: context, onAdDismissed: () {});
-    }
+
   }
 
   // Print/Preview PDF
@@ -305,7 +303,7 @@ class _ActionCenterScreenState extends State<ActionCenterScreen> with SingleTick
     final recommendedIndex = _getRecommendedTemplateIndex(state);
 
     return Scaffold(
-      bottomNavigationBar: state.isPremium ? null : const BannerAdWidget(),
+      bottomNavigationBar: state.isPremium ? null : const RemoteAdBanner(),
       backgroundColor: AppTheme.bgLight,
       appBar: AppBar(
         backgroundColor: AppTheme.primaryNavy,
