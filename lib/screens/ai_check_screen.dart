@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../providers/case_state.dart';
 import '../theme.dart';
@@ -98,7 +97,6 @@ class _AiCheckScreenState extends State<AiCheckScreen> {
   @override
   Widget build(BuildContext context) {
     final state = Provider.of<CaseState>(context);
-    final caseModel = state.currentCase;
     final completeness = state.evidenceCompleteness;
     final completedList = state.completedItems;
     final missingList = state.missingItems;
@@ -112,42 +110,6 @@ class _AiCheckScreenState extends State<AiCheckScreen> {
             backgroundColor: AppTheme.primaryNavy,
             elevation: 0,
             title: const Text("AI 案件健檢"),
-            actions: [
-              // Developer Fast-Pass buttons (debug 模式才會顯示，正式上架版本自動隱藏)
-              if (kDebugMode) ...[
-                IconButton(
-                  icon: const Icon(Icons.developer_mode, color: AppTheme.secondaryYellow),
-                  tooltip: "測試：解鎖所有功能",
-                  onPressed: () async {
-                    await state.simulatePurchaseMock("moneyback.yearly.490");
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("🔧 [測試模式] 已解鎖全部債權保全與存證信函工具！"),
-                          backgroundColor: AppTheme.primaryNavy,
-                        ),
-                      );
-                      Navigator.pushNamed(context, '/action_center');
-                    }
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.refresh),
-                  tooltip: "測試：重設所有購買狀態",
-                  onPressed: () async {
-                    await state.resetPurchases();
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("🔧 [測試模式] 已重設所有購買狀態。"),
-                          backgroundColor: AppTheme.dangerRed,
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ],
-            ],
           ),
           body: SingleChildScrollView(
             child: Column(
